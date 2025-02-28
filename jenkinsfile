@@ -1,5 +1,10 @@
 pipeline{
-    agent any
+    agent {
+        docker {
+            image 'node:18' // Use Node.js official image
+            args '-u root' // Run as root to avoid permission issues
+        }
+    }
 
 
     environment {
