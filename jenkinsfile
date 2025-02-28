@@ -1,0 +1,23 @@
+pipeline{
+     agent any
+
+    environment {
+        DOCKER_IMAGE = "your-dockerhub-username/your-nodejs-app"
+        CONTAINER_NAME = "nodejs-crud-app"
+        PORT = "3000"
+    }
+    stages {
+         stage('Checkout Code') {
+            steps {
+                git 'https://github.com/Soumya-9641/jenkinsStarter.git'  // Replace with your GitHub repo
+            }
+        }
+          stage('Install Dependencies') {
+            steps {
+                script {
+                    sh 'npm install'
+                }
+            }
+        }
+    }
+}
