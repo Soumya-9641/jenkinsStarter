@@ -1,9 +1,6 @@
 pipeline{
-     agent {
-         docker {
-            image 'node:18'  // Use Node.js 18 image
-        }
-     }
+    agent any
+
 
     environment {
         DOCKER_IMAGE = "your-dockerhub-username/your-nodejs-app"
@@ -11,16 +8,21 @@ pipeline{
         PORT = "3000"
     }
     stages {
-         stage('Checkout Code') {
+        //  stage('Checkout Code') {
+        //     steps {
+        //         git 'https://github.com/Soumya-9641/jenkinsStarter.git'  // Replace with your GitHub repo
+        //     }
+        // }
+        //   stage('Install Dependencies') {
+        //     steps {
+        //         script {
+        //             sh 'npm install'
+        //         }
+        //     }
+        // }
+        stage('Check Docker') {
             steps {
-                git 'https://github.com/Soumya-9641/jenkinsStarter.git'  // Replace with your GitHub repo
-            }
-        }
-          stage('Install Dependencies') {
-            steps {
-                script {
-                    sh 'npm install'
-                }
+                sh 'docker version'
             }
         }
     }
