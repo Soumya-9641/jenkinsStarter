@@ -1,5 +1,9 @@
 pipeline{
-     agent any
+     agent {
+         docker {
+            image 'node:18'  // Use Node.js 18 image
+        }
+     }
 
     environment {
         DOCKER_IMAGE = "your-dockerhub-username/your-nodejs-app"
