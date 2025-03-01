@@ -38,16 +38,16 @@ pipeline{
             }
         }
 
-        // stage('Push to Docker Hub') {
-        //     steps {
-        //         script {
-        //             withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-        //                 sh "docker login -u your-dockerhub-username -p your-dockerhub-password"
-        //                 sh "docker push $DOCKER_IMAGE"
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                        sh "docker login -u soumya9641 -p Soumya@dockerhub"
+                        sh "docker push $DOCKER_IMAGE"
+                    }
+                }
+            }
+        }
     }
      post {
         always {
