@@ -1,57 +1,120 @@
-pipeline{
-    agent {
-        docker {
-            image 'node:18' // Use Node.js official image
-            args '-u root' // Run as root to avoid permission issues
-        }
-    }
+// pipeline{
+//     agent {
+//         docker {
+//             image 'node:18' // Use Node.js official image
+//             args '-u root' // Run as root to avoid permission issues
+//         }
+//     }
 
+
+//     environment {
+//         DOCKER_IMAGE = "soumya9641/jenkinstarter"
+//         CONTAINER_NAME = "jenkinstarter"
+//         PORT = "9000"
+//     }
+//     stages {
+//          stage('Checkout Code') {
+//             steps {
+//                 git 'https://github.com/Soumya-9641/jenkinsStarter.git'  // Replace with your GitHub repo
+//             }
+//         } 
+//           stage('Install Dependencies') {
+//             steps {
+//                 script {
+//                     sh 'npm install'
+//                 }
+//             }
+//         }
+//         stage('Check Docker') {
+//             steps {
+//                 sh 'docker version'
+//             }
+//         }
+//          stage('Build Docker Image') {
+//             steps {
+//                 script {
+//                     sh "docker build -t $DOCKER_IMAGE ."
+//                 }
+//             }
+//         }
+
+//         stage('Push to Docker Hub') {
+//             steps {
+//                 script {
+//                     withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+//                         sh "docker login -u soumya9641 -p Soumya@dockerhub"
+//                         sh "docker push $DOCKER_IMAGE"
+//                     }
+//                 }
+//             }
+//         }
+//     }
+//      post {
+//         always {
+//             echo "CI/CD Pipeline Completed! Image pushed to Docker Hub."
+//         }
+//     }
+// }
+
+
+pipeline {
+    agent any
 
     environment {
-        DOCKER_IMAGE = "soumya9641/jenkinstarter"
-        CONTAINER_NAME = "jenkinstarter"
-        PORT = "9000"
+        DOCKER_IMAGE = 'soumya9641/jenkinstarter-v2'
+        DOCKER_TAG = 'latest'
     }
+
     stages {
-         stage('Checkout Code') {
+        stage('Checkout Code') {
             steps {
-                git 'https://github.com/Soumya-9641/jenkinsStarter.git'  // Replace with your GitHub repo
+                git 'https://github.com/Soumya-9641/jenkinsStarter.git'
             }
         }
-          stage('Install Dependencies') {
+
+        stage('Install Dependencies') {
             steps {
-                script {
-                    sh 'npm install'
-                }
+                sh 'npm install'
             }
         }
-        stage('Check Docker') {
+
+        // stage('Build Application') {
+        //     steps {
+        //         sh 'npm run build'
+        //     }
+        // }
+
+        stage('Build Docker Image') {
             steps {
-                sh 'docker version'
+                sh """
+                docker build -t $DOCKER_IMAGE:$DOCKER_TAG .
+                """
             }
         }
-         stage('Build Docker Image') {
+
+        stage('Login to Docker Hub') {
             steps {
-                script {
-                    sh "docker build -t $DOCKER_IMAGE ."
+                withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
                 }
             }
         }
 
-        stage('Push to Docker Hub') {
+        stage('Push Docker Image') {
             steps {
-                script {
-                    withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                        sh "docker login -u soumya9641 -p Soumya@dockerhub"
-                        sh "docker push $DOCKER_IMAGE"
-                    }
-                }
+                sh "docker push $DOCKER_IMAGE:$DOCKER_TAG"
             }
         }
-    }
-     post {
-        always {
-            echo "CI/CD Pipeline Completed! Image pushed to Docker Hub."
+
+        stage('Deploy Container') {
+            steps {
+                sh """
+                docker stop my-app || true
+                docker rm my-app || true
+                docker run -d -p 3000:3000 --name my-app $DOCKER_IMAGE:$DOCKER_TAG
+                """
+            }
         }
     }
 }
+
