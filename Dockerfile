@@ -16,5 +16,7 @@ COPY . .
 # Expose port 3000
 EXPOSE 3000
 
+RUN rm -rf node_modules/testserver
+
 # Start the application
 CMD ["npm", "start"]
