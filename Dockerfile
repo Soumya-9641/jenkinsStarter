@@ -10,13 +10,12 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+RUN rm -rf node_modules/testserver
 # Copy the rest of the app files
 COPY . .
 
 # Expose port 3000
 EXPOSE 3000
-
-RUN rm -rf node_modules/testserver
 
 # Start the application
 CMD ["npm", "start"]
