@@ -8,6 +8,7 @@ pipeline{
 
    // agent any
     environment {
+        DOCKER_HOST = "tcp://docker:2375"
         DOCKER_IMAGE = "soumya9641/jenkinstarter"
         CONTAINER_NAME = "jenkinstarter"
         PORT = "9000"
