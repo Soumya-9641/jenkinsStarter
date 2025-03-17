@@ -2,22 +2,20 @@ pipeline{
     agent {
         docker {
             image 'node:18' // Use Node.js official image
-            //args '--network=host -v /var/run/docker.sock:/var/run/docker.sock' // Run as root to avoid permission issues
-            args '-u root'
+            args '-u root' // Run as root to avoid permission issues
         }
     }
 
-   // agent any
+
     environment {
-       // DOCKER_HOST = "tcp://docker:2375"
         DOCKER_IMAGE = "soumya9641/jenkinstarter"
         CONTAINER_NAME = "jenkinstarter"
-        PORT = "3000"
+        PORT = "9000"
     }
     stages {
          stage('Checkout Code') {
             steps {
-                git 'https://github.com/Soumya-9641/jenkinsStarter.git'  
+                git 'https://github.com/Soumya-9641/jenkinsStarter.git'  // Replace with your GitHub repo
             }
         } 
           stage('Install Dependencies') {
@@ -27,11 +25,11 @@ pipeline{
                 }
             }
         }
-       stage('Check Docker') {
-    steps {
-       sh 'docker version'
-    }
-}
+        stage('Check Docker') {
+            steps {
+                sh 'docker --version'
+            }
+        }
          stage('Build Docker Image') {
             steps {
                 script {
@@ -66,6 +64,7 @@ pipeline{
         }
     }
 }
+
 
 
 // pipeline {
