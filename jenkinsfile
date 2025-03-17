@@ -8,7 +8,7 @@ pipeline{
 
     agent any
     environment {
-        DOCKER_HOST = "tcp://docker:2375"
+       // DOCKER_HOST = "tcp://docker:2375"
         DOCKER_IMAGE = "soumya9641/jenkinstarter"
         CONTAINER_NAME = "jenkinstarter"
         PORT = "9000"
@@ -26,11 +26,11 @@ pipeline{
                 }
             }
         }
-        stage('Check Docker') {
-            steps {
-                sh 'docker version'
-            }
-        }
+       stage('Check Docker') {
+    steps {
+        sh 'DOCKER_HOST="" docker version'
+    }
+}
          stage('Build Docker Image') {
             steps {
                 script {
