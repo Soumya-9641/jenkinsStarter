@@ -15,7 +15,7 @@ pipeline{
     stages {
          stage('Checkout Code') {
             steps {
-                git 'https://github.com/Soumya-9641/jenkinsStarter.git'  // Replace with your GitHub repo
+                git 'https://github.com/Soumya-9641/jenkinsStarter.git'  
             }
         } 
           stage('Install Dependencies') {
