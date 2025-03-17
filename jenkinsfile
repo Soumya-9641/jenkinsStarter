@@ -2,7 +2,8 @@ pipeline{
     agent {
         docker {
             image 'node:18' // Use Node.js official image
-            args '-u root' // Run as root to avoid permission issues
+             args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+            //args '-u root' // Run as root to avoid permission issues
         }
     }
 
@@ -29,7 +30,7 @@ pipeline{
         stage('Check Docker') {
             steps {
                   sh 'docker --version || echo "Docker command not working!"'
-                sh 'ls -lah /usr/bin/docker'  // Check if Docker binary exists
+               // sh 'ls -lah /usr/bin/docker'  // Check if Docker binary exists
             }
         }
          stage('Build Docker Image') {
