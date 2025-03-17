@@ -1,17 +1,17 @@
 pipeline{
-    // agent {
-    //     docker {
-    //         image 'node:18' // Use Node.js official image
-    //         args '--network=host -v /var/run/docker.sock:/var/run/docker.sock' // Run as root to avoid permission issues
-    //     }
-    // }
+    agent {
+        docker {
+            image 'node:18' // Use Node.js official image
+            args '--network=host -v /var/run/docker.sock:/var/run/docker.sock' // Run as root to avoid permission issues
+        }
+    }
 
-    agent any
+   // agent any
     environment {
        // DOCKER_HOST = "tcp://docker:2375"
         DOCKER_IMAGE = "soumya9641/jenkinstarter"
         CONTAINER_NAME = "jenkinstarter"
-        PORT = "9000"
+        PORT = "3000"
     }
     stages {
          stage('Checkout Code') {
