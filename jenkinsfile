@@ -8,7 +8,7 @@ pipeline{
 
 
     environment {
-         DOCKER_PATH = "/usr/bin/docker" 
+       //  DOCKER_PATH = "/usr/bin/docker" 
         DOCKER_IMAGE = "soumya9641/jenkinstarter"
         CONTAINER_NAME = "jenkinstarter"
         PORT = "9000"
@@ -28,14 +28,14 @@ pipeline{
         }
         stage('Check Docker') {
             steps {
-                  sh '$DOCKER_PATH --version || echo "Docker command not working!"'
+                  sh 'docker --version || echo "Docker command not working!"'
                 sh 'ls -lah /usr/bin/docker'  // Check if Docker binary exists
             }
         }
          stage('Build Docker Image') {
             steps {
                 script {
-                    sh "$DOCKER_PATH build -t $DOCKER_IMAGE ."
+                    sh "docker build -t $DOCKER_IMAGE ."
                 }
             }
         }
@@ -44,8 +44,8 @@ pipeline{
             steps {
                 script {
                     withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                        sh "$DOCKER_PATH login -u soumya9641 -p Soumya@dockerhub"
-                        sh "$DOCKER_PATH push $DOCKER_IMAGE"
+                        sh "docker login -u soumya9641 -p Soumya@dockerhub"
+                        sh "docker push $DOCKER_IMAGE"
                     }
                 }
             }
@@ -53,9 +53,9 @@ pipeline{
         stage('Deploy Container') {
             steps {
                 sh """
-                $DOCKER_PATH stop jenkinstarter || true
-                $DOCKER_PATH rm jenkinstarter || true
-                $DOCKER_PATH run -d -p 3000:3000 --name jenkinstarter $DOCKER_IMAGE:latest
+                docker stop jenkinstarter || true
+                docker rm jenkinstarter || true
+                docker run -d -p 3000:3000 --name jenkinstarter $DOCKER_IMAGE:latest
                 """
             }
         }
